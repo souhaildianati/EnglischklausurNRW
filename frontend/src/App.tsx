@@ -1,7 +1,8 @@
 import { Children, cloneElement, isValidElement, useEffect, useId, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { ArrowDownToLine, ArrowRight, BookOpen, Check, CheckCircle2, ChevronRight, Circle, FileText, FolderOpen, GraduationCap, Library, LoaderCircle, Plus, Save, Settings2, ShieldCheck, Sparkles, Trash2, Upload, X } from 'lucide-react';
-import { api, download, importFile } from './api';
+import { api, download, importFile, saveBlob } from './api';
+import { OFFLINE_DEMO } from './build-mode';
 import { blankExam, sampleExam } from './sample';
 import PdfReference from './PdfReference';
 import type { Exam, Knowledge, KnowledgeInput, Profile, Review, SavedExam, Status, Task } from './types';
@@ -24,7 +25,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 }
 
 function InputFile({ label, onImport, disabled }: { label: string; onImport: (file: File) => void; disabled: boolean }) {
-  return <label className={`button secondary file-button ${disabled ? 'disabled' : ''}`}><Upload size={16} />{label}<input type="file" accept=".pdf,.docx,.txt,.md" disabled={disabled} onChange={e => { const file = e.target.files?.[0]; if (file) onImport(file); e.target.value = ''; }} /></label>;
+  return <label className={`button secondary file-button ${disabled ? 'disabled' : ''}`}><Upload size={16} />{label}<input type="file" accept={OFFLINE_DEMO ? '.txt,.md' : '.pdf,.docx,.txt,.md'} disabled={disabled} onChange={e => { const file = e.target.files?.[0]; if (file) onImport(file); e.target.value = ''; }} /></label>;
 }
 
 function toExam(value: SavedExam): Exam {
@@ -140,8 +141,9 @@ export default function App() {
     </aside>
 
     <div className="main-shell">
-      <header className="topbar"><div className="breadcrumb">Arbeitsplatz<ChevronRight size={14} /><strong>{view === 'exam' ? 'Klausurwerkstatt' : view === 'knowledge' ? 'Wissensbasis' : 'Formatprofil'}</strong></div><div className="topbar-right"><span className={`ai-status ${status?.ai_available ? 'online' : ''}`}><span />{status?.ai_available ? 'KI konfiguriert' : 'Manueller Modus'}</span><span className="avatar" aria-label="Arbeitsbereich Lehrkraft">LK</span></div></header>
+      <header className="topbar"><div className="breadcrumb">Arbeitsplatz<ChevronRight size={14} /><strong>{view === 'exam' ? 'Klausurwerkstatt' : view === 'knowledge' ? 'Wissensbasis' : 'Formatprofil'}</strong></div><div className="topbar-right"><span className={`ai-status ${status?.ai_available ? 'online' : ''}`}><span />{OFFLINE_DEMO ? 'Testversion · ohne Anmeldung' : status?.ai_available ? 'KI konfiguriert' : 'Manueller Modus'}</span><span className="avatar" aria-label="Arbeitsbereich Lehrkraft">LK</span></div></header>
       <main>
+        {OFFLINE_DEMO && <section className="demo-banner" aria-label="Testversion"><div><strong>Einfach ausprobieren. Ohne Anmeldung.</strong><p>Der Beispielentwurf ist schon geladen. Bearbeite Aufgaben und Kriterien und lade deine Word-Dateien herunter. {status?.persistent === false ? 'Dieser Browser speichert nur für die aktuelle Sitzung.' : 'Änderungen werden nur in diesem Browser gespeichert.'} KI und PDF-Analyse sind hier noch nicht aktiv.</p></div><button className="button secondary" disabled={!!busy || loading} onClick={() => void act('Arbeitsstand herunterladen', async () => { saveBlob(new Blob([JSON.stringify(await api('/backup'), null, 2)], { type: 'application/json' }), 'Klausurwerk-Arbeitsstand.json'); setNotice('Arbeitsstand heruntergeladen.'); })}><ArrowDownToLine size={16} />Arbeitsstand herunterladen</button></section>}
         {error && <div role="alert" className="message error"><strong>Das hat noch nicht geklappt.</strong><span>{error}</span><button aria-label="Fehlermeldung schließen" onClick={() => setError('')}><X size={17} /></button></div>}
         {notice && <div role="status" className="message success"><CheckCircle2 size={18} /><span>{notice}</span><button aria-label="Hinweis schließen" onClick={() => setNotice('')}><X size={17} /></button></div>}
         {loading ? <div className="loading"><LoaderCircle className="spin" />Deine Werkstatt wird geöffnet …</div> : !profile || !status ? <div className="panel"><h1>Die Werkstatt ist noch nicht erreichbar.</h1><button className="button primary" onClick={() => void load()}>Erneut laden</button></div> : <>

@@ -4,19 +4,23 @@ Eine Web-App für Lehrkräfte: aus einem Ausgangstext editierbare Englischaufgab
 
 **Stand: erster privater Funktionsprototyp.** Die mitgelieferten Formatwerte und Beispielgewichtungen sind **keine verifizierten NRW-Vorgaben**. Alle Word-Dateien tragen die Kennzeichnung „Entwurf“. Der erste Umfang ist der textbezogene Klausurteil; Hörverstehen, Sprachmittlung, vollständige Abiturprüfungsvarianten und Notenschlüssel sind noch nicht umgesetzt.
 
-## Im Browser ausprobieren
+## Web-Testversion ohne Anmeldung
 
-[Private Testumgebung in GitHub Codespaces starten](https://codespaces.new/souhaildianati/EnglischklausurNRW?ref=main)
+Die Web-Testversion lädt einen handverfassten Beispielentwurf direkt im Browser. Aufgaben und Kriterien lassen sich bearbeiten, im eigenen Browser speichern und als zwei echte Word-Dateien herunterladen. Ein zusätzlicher JSON-Download sichert den Arbeitsstand. Es werden keine Texte oder Arbeitsdaten an eine API gesendet.
 
-1. Bei GitHub anmelden und die Codespace-Erstellung bestätigen. Dafür wird verfügbares Codespaces-Kontingent benötigt; abhängig vom GitHub-Tarif können Kosten entstehen. Es wird durch diesen Link noch keine Instanz automatisch angelegt.
-2. Beim ersten Start die Einrichtung abwarten. Die Konfiguration installiert die festgehaltenen Abhängigkeiten, baut die Oberfläche und startet Klausurwerk.
-3. Falls sich die App nicht von selbst öffnet: im Bereich **Ports** bei **8000 / Klausurwerk** auf **Im Browser öffnen** klicken. Die Portfreigabe privat lassen. Codespaces schützt den Zugang über GitHub; die App selbst hat noch keine Anmeldung.
-4. **Mit Beispiel ausprobieren** anklicken. Einen Arbeitsauftrag und ein Kriterium ändern, speichern, erneut öffnen und unter **Prüfen & Export** beide Word-Dateien herunterladen. Unter **Formatprofil** lässt sich eine eigene PDF untersuchen.
-5. Nach dem Test den Codespace über GitHub stoppen, damit keine weitere Rechenzeit verbraucht wird. Bereits gespeicherte Daten bleiben innerhalb dieses Codespaces bis zu dessen Löschung; sie werden nicht automatisch nach GitHub gesichert.
+Diese Testversion enthält noch keine KI, PDF-Analyse oder PDF-/DOCX-Importfunktion. Text kann eingefügt oder als TXT/Markdown eingelesen werden. Die vollständige servergestützte App behält diese zusätzlichen Funktionen. Die NRW-Vorlagen sind weiterhin vorläufig.
 
-Eine neue Testumgebung beginnt ohne die lokalen Arbeitsdaten und Original-PDFs der Codex-Umgebung. Der handverfasste Beispieldatensatz ist enthalten. KI-Vorschläge benötigen zusätzlich einen serverseitigen `LLM_API_KEY`; der manuelle Ablauf funktioniert ohne Schlüssel. Die fertige NRW-Vorlage ist noch nicht umgesetzt.
+Die öffentlichen Dateien liegen im Branch `gh-pages`. Für den normalen Weblink muss GitHub Pages einmalig mit der Quelle **gh-pages / (root)** aktiviert werden. Das Hochladen des Branches allein bestätigt keine erfolgreiche Veröffentlichung; deren Status und der öffentliche HTTP-Aufruf müssen separat geprüft werden.
 
-Die Codespace-Konfiguration startet keine öffentliche Website. Containerbau sowie ein frischer Durchlauf von Installation, Hintergrundstart, Speicherung und beiden Word-Exporten wurden geprüft. Auch die Anfragen über die private Codespaces-Adresse sind in der Anwendung getestet. Die tatsächliche Anmeldung und Portfreigabe in einem GitHub-Konto müssen beim erstmaligen Öffnen geprüft werden.
+Für die Entwicklung:
+
+```bash
+npm run build:demo --prefix frontend
+npm run test:demo --prefix frontend
+bash scripts/publish-demo.sh
+```
+
+Der Build erzeugt eine selbstständige HTML-Webseite unter `frontend/demo-dist/index.html`. `publish-demo.sh` veröffentlicht ausschließlich diese Webseite und `.nojekyll`, keine Original-PDFs, Datenbanken oder Zugangsdaten. Es verwendet keinen zusätzlichen Git-Worktree. Die Browserprüfungen testen den Webaufruf, Speicherung, echte Word-Strukturen, die Trennung von Schüler- und Lehrkraftdokument sowie die Nutzung ohne weitere API-Anfragen. Codespaces bleibt eine optionale Entwicklungsumgebung unter `.devcontainer/`; es ist nicht der vorgesehene Testzugang für Lehrkräfte.
 
 ## Starten
 

@@ -23,4 +23,4 @@ export type Profile = {
   margin_cm: number; source_reference: string; reviewed: boolean; version: number;
 };
 export type Review = { checks: { label: string; passed: boolean; detail: string }[]; content_points: number; language_points: number; profile_version: number };
-export type Status = { ai_available: boolean; ai_model: string };
+export type Status = { ai_available: boolean; ai_model: string; mode?: 'private-prototype' | 'offline-demo'; persistent?: boolean };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FileSearch, LoaderCircle, Upload } from 'lucide-react';
+import { OFFLINE_DEMO } from './build-mode';
 
 type Font = { pdf_name: string; name: string; size_pt: number; characters: number };
 type Report = {
@@ -16,6 +17,8 @@ export default function PdfReference() {
   const [report, setReport] = useState<Report>();
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  if (OFFLINE_DEMO) return <section className="panel pdf-reference"><h2>PDF-Analyse folgt in der vollständigen Version</h2><p className="pdf-intro">In dieser Testversion kannst du Aufgaben und Erwartungshorizonte bearbeiten und als Word-Dateien herunterladen. Die Untersuchung von PDF-Schriften und der Import von PDF- und Word-Dateien sind hier noch nicht freigeschaltet. Du kannst Text direkt einfügen oder TXT-Dateien importieren.</p></section>;
 
   async function analyze(file: File) {
     setError(''); setReport(undefined); setBusy(true);
