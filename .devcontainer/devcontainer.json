@@ -1,0 +1,22 @@
+{
+  "name": "Klausurwerk ausprobieren",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "UV_CACHE_DIR": "${containerWorkspaceFolder}/.cache/uv",
+    "npm_config_cache": "${containerWorkspaceFolder}/.cache/npm"
+  },
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Klausurwerk – private Testoberfläche",
+      "onAutoForward": "openBrowser",
+      "protocol": "http"
+    }
+  },
+  "postCreateCommand": "bash scripts/setup.sh",
+  "postStartCommand": "bash scripts/start-background.sh"
+}

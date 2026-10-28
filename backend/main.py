@@ -11,6 +11,7 @@ from pypdf import PdfReader
 from . import ai, store
 from .documents import make_document
 from .models import Exam, FormatProfile, GenerateRequest, KnowledgeInput
+from .origins import origin_allowed
 from .pdf_analysis import analyze_pdf
 from .review import review
 
@@ -23,8 +24,7 @@ async def local_app_protection(request: Request, call_next):
     if request.method not in ("GET", "HEAD", "OPTIONS"):
         origin = request.headers.get("origin")
         if origin:
-            from urllib.parse import urlsplit
-            if urlsplit(origin).netloc != request.headers.get("host"):
+            if not origin_allowed(origin, request.headers.get("host", "")):
                 return JSONResponse({"detail": "Anfrage von fremder Herkunft abgewiesen."}, status_code=403)
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
