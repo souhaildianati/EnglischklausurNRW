@@ -1,0 +1,21 @@
+[project]
+name = "klausurwerk"
+version = "0.1.0"
+description = "Editierbare Englischklausuren und Word-Exporte mit nachvollziehbarer Wissensbasis"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn>=0.34,<1",
+  "python-docx>=1.1,<2",
+  "pypdf>=6,<7",
+  "python-multipart>=0.0.20,<1",
+  "httpx>=0.28,<1",
+  "pdfplumber>=0.11,<1",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
